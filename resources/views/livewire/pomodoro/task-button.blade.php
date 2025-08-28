@@ -11,7 +11,7 @@
         <div
             class="fixed inset-0 bg-opacity-50 z-50 bg-c-background"
         >
-            <button @click="close()"
+            <button x-on:click="close()"
                     class="absolute top-2 right-2 w-12 h-12 flex items-center justify-center text-gray-600 hover:text-black text-4xl font-bold rounded-full hover:bg-gray-200 transition">
                 &times;
             </button>

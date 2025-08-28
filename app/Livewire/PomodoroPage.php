@@ -13,8 +13,13 @@ class PomodoroPage extends Component
     public const SHORT_BREAK = 'Short Break';
     public const LONG_BREAK = 'Long Break';
 
+    public const PINK = 'pink';
+    public const GREEN = 'green';
+    public const BLUE = 'blue';
+
     public ?int $task_id = null;
-    public bool $timer_started = false;
+    public bool $timerStarted = false;
+
     public ?string $timer_started_at;
     public ?string $timer_stopped_at;
 
@@ -24,7 +29,13 @@ class PomodoroPage extends Component
         self::LONG_BREAK,
     ];
 
-    public const TRIBE_INITIAL_TIME = [
+    public const TRIBE_COLORS = [
+        self::POMODORO => self::PINK,
+        self::SHORT_BREAK => self::GREEN,
+        self::LONG_BREAK => self::BLUE,
+    ];
+
+    public const TRIBE_INITIAL_TIMES = [
         self::POMODORO => 25 * 60,
         self::SHORT_BREAK => 5 * 60,
         self::LONG_BREAK => 15 * 60,
@@ -32,7 +43,9 @@ class PomodoroPage extends Component
 
     public string $tribe = self::POMODORO;
 
-    public string $color = 'pink';
+    public string $color = self::TRIBE_COLORS[self::POMODORO];
+
+    public int $initialTime = self::TRIBE_INITIAL_TIMES[self::POMODORO];
 
     public function render()
     {
@@ -45,9 +58,12 @@ class PomodoroPage extends Component
         $this->task_id = $task_id;
     }
 
-    #[On('stopTimer')]
-    public function saveFrame(string $timer_started_at, string $timer_stopped_at): void
+    public function saveFrame(?string $timer_started_at, ?string $timer_stopped_at): void
     {
+        if (!$timer_stopped_at || !$timer_started_at) {
+            return;
+        }
+
         if (TrackerFrame::query()
             ->where('user_id', auth()->id())
             ->where('started_at', Carbon::parse($timer_started_at))

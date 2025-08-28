@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Homepage;
 use App\Livewire\Pomodoro\Counter;
 use App\Livewire\Pomodoro\TaskButton;
 use App\Livewire\PomodoroPage;
@@ -17,7 +18,8 @@ Route::get('/tracker', TrackerPage::class);
 Route::get('/tasks', TasksList::class);
 Route::get('/edit', QuickEditTask::class);
 
-Route::get('/pomodoro', PomodoroPage::class);
+Route::get('/pomodoro', PomodoroPage::class)->name('pomodoro.timer');
+Route::get('/homepage', Homepage::class);
 
 Route::get('/', function () {
     return view('welcome');

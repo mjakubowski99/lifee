@@ -1,19 +1,31 @@
 @php use App\Livewire\PomodoroPage; @endphp
 <div>
-
-
-    <nav class="bg-c-background border-b border-c-border/50">
-        <div class="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-2 md:py-4">
+    <nav class="relative overflow-hidden backdrop-blur-sm border-b" style="background: linear-gradient(90deg, rgba(42, 42, 64, 0.8) 0%, rgba(38, 38, 38, 0.7) 100%); border-color: hsl(227,54%,33%)">
+        <div class="mx-auto flex items-center justify-between px-6 py-6">
             <!-- Logo -->
-            <a href="#" class="flex items-center space-x-2">
-                <span class="font-semibold text-2xl">Focus</span>
+            <a class="flex items-center space-x-4" href="/homepage">
+                <div class="p-1 rounded-full" style="background: linear-gradient(135deg, #6C77FF 0%, #9ABCFF 100%)">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a3 3 0 0 0-3 3c0 1.5-.5 2.5-1.5 3.5C6.5 9.5 6 10.5 6 12s.5 2.5 1.5 3.5c1 1 1.5 2 1.5 3.5a3 3 0 0 0 6 0c0-1.5.5-2.5 1.5-3.5c1-1 1.5-2 1.5-3.5s-.5-2.5-1.5-3.5C14.5 7.5 14 6.5 14 5a3 3 0 0 0-2-3z"/>
+                        <path d="M12 16v-4"/>
+                        <path d="M8 12h8"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold"
+                    style="background: linear-gradient(135deg, #6C77FF 0%, #9ABCFF 100%);
+                       -webkit-background-clip: text;
+                       background-clip: text;
+                       -webkit-text-fill-color: transparent;
+                       color: transparent;">
+                    Daily focus
+                </h1>
             </a>
 
             <!-- Menu (desktop) -->
-            <ul class="hidden md:flex items-center space-x-6 text-gray-100 text-lg">
-                <li><a href="#" class="hover:text-c-primary">Pomodoro</a></li>
-                <li><a href="#" class="hover:text-c-primary">Tasks</a></li>
-                <li><a href="#" class="hover:text-c-primary">Profile</a></li>
+            <ul class="hidden md:flex items-center space-x-6 text-gray-100 text-lg mr-2">
+                <li><a href="#" class="hover:text-c-primary font-bold">Pomodoro</a></li>
+                <li><a href="#" class="hover:text-c-primary font-bold">Tasks</a></li>
+                <li><a href="#" class="hover:text-c-primary font-bold">Profile</a></li>
             </ul>
 
             <!-- Hamburger mobile -->
@@ -31,6 +43,7 @@
             <li><a href="#" class="hover:text-c-primary">Launches</a></li>
         </ul>
     </nav>
+
 
 
     <div class="flex items-center mt-5">
@@ -72,85 +85,147 @@
             </div>
 
             <div class="flex justify-center mb-2 mt-6">
-                <livewire:pomodoro.counter :initialTime="25*60"/>
+                <livewire:pomodoro.counter :initialTime="$initialTime"/>
             </div>
 
-            <button x-on:click="$js.playOrPause" class="mx-auto mt-3 flex bg-c-primary rounded px-2 py-4 gap-x-4 hover:bg-blue-600">
-                <span x-text="$wire.timer_started ? 'Pause' : 'Play'"></span>
+            <button
+                x-on:click="$wire.dispatch('timerToggled')"
+                :class="{'animate-bounce-custom': !$wire.timerStarted}"
+                class="timer-button mx-auto mt-6 flex rounded px-4 py-4 transition-all duration-300 transform relative overflow-hidden group"
+                style="background: linear-gradient(135deg, #545CFF 0%, #7A8CFF 100%);"
+            >
+                <!-- Animowany efekt tła (tylko gdy nie started) -->
+                <div x-show="!$wire.timerStarted" class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+
+                <!-- Pulsujące kółko (tylko gdy nie started) -->
+                <div x-show="!$wire.timerStarted" class="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded opacity-20 blur-sm animate-ping group-hover:animate-pulse"></div>
+
+                <!-- Tekst z ikoną -->
+                <div class="relative z-10 flex items-center">
+                    <div class="play-pause-icon">
+                        <svg x-show="!$wire.timerStarted" class="w-8 h-8 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <svg x-show="$wire.timerStarted" class="w-8 h-8 text-white transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Iskierki (tylko gdy nie started) -->
+                <template x-if="!$wire.timerStarted">
+                    <div>
+                        <div class="sparkle sparkle-1"></div>
+                        <div class="sparkle sparkle-2"></div>
+                        <div class="sparkle sparkle-3"></div>
+                        <div class="sparkle sparkle-4"></div>
+                    </div>
+                </template>
             </button>
         </div>
 
     </div>
+
+    <footer class="fixed bottom-0 left-0 w-full z-50 py-4 text-center backdrop-blur-lg border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)]"
+            style="
+            background: linear-gradient(90deg, rgba(35, 35, 55, 0.9) 0%, rgba(30, 30, 30, 0.85) 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        ">
+        <div class="container mx-auto px-6">
+            <p style="
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.6px;
+            text-shadow: 0 0 8px rgba(108, 119, 255, 0.3);
+            background: linear-gradient(135deg, #6C77FF 0%, #9ABCFF 100%);
+           -webkit-background-clip: text;
+           background-clip: text;
+           -webkit-text-fill-color: transparent;
+           color: transparent;">
+                Every day is a new challenge.
+            </p>
+        </div>
+    </footer>
+
+    <style>
+        /* Główne style buttona */
+        .timer-button {
+            background: linear-gradient(135deg, #545CFF 0%, #7A8CFF 100%);
+            box-shadow: 0 4px 15px rgba(84, 92, 255, 0.3);
+        }
+
+        /* Hover – lekko rozjaśniamy */
+        .timer-button:hover {
+            background: linear-gradient(135deg, #5E66FF 0%, #8DA0FF 100%);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(84, 92, 255, 0.4);
+        }
+
+        /* Klasa animacji tylko gdy nie started */
+        .animate-bounce-custom {
+            animation: gentle-bounce 2s ease-in-out infinite, pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(84, 92, 255, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(84, 92, 255, 0.6); }
+        }
+    </style>
+
 </div>
 
 @script
 
     <script>
-        $js('getTimerColor', function(tribe) {
-            switch (tribe) {
-                case '{{PomodoroPage::SHORT_BREAK}}':
-                    return 'green';
-                case '{{PomodoroPage::LONG_BREAK}}':
-                    return 'blue';
-                default:
-                    return 'pink';
-            }
-        });
+        const TRIBES = @json(PomodoroPage::TRIBES);
+        const TRIBE_COLORS = @json(PomodoroPage::TRIBE_COLORS);
+        const TRIBE_INITIAL_TIMES = @json(PomodoroPage::TRIBE_INITIAL_TIMES);
 
-        $js('getTribeInitialTime', function(tribe) {
-            switch (tribe) {
-                case '{{PomodoroPage::SHORT_BREAK}}':
-                    return 60 * 5;
-                case '{{PomodoroPage::LONG_BREAK}}':
-                    return 60 * 15;
-                case '{{PomodoroPage::POMODORO}}':
-                    return 60 * 25;
-            }
-        });
-
-        $js('playOrPause', function () {
-            Livewire.dispatch('timerToggled');
-        });
+        const POMODORO = '{{PomodoroPage::POMODORO}}';
+        const SHORT_BREAK = '{{PomodoroPage::SHORT_BREAK}}';
+        const LONG_BREAK = '{{PomodoroPage::LONG_BREAK}}';
 
         $js('setTribe', (tribe) => {
             $wire.tribe = tribe;
-            $wire.color = $js.getTimerColor(tribe);
+            $wire.color = TRIBE_COLORS[tribe];
 
-            Livewire.dispatch('setTribe', {
+            $wire.dispatch('setTribe', {
                 'color': $wire.color,
-                'tribeInitialTime': $js.getTribeInitialTime(tribe)
+                'tribeInitialTime': TRIBE_INITIAL_TIMES[tribe]
             });
         });
 
         Livewire.on('timerStarted', () => {
-            $wire.timer_started = true;
+            $wire.timerStarted = true;
         });
 
         Livewire.on('timerStopped', (props) => {
-            $wire.timer_started = false;
+            $wire.timerStarted = false;
 
-            if (props.startedAt && props.stoppedAt) {
-                $wire.dispatch('stopTimer', {
-                    timer_started_at: props.startedAt,
-                    timer_stopped_at: props.stoppedAt
-                });
-            }
+            $wire.saveFrame(props.startedAt, props.stoppedAt);
         });
 
         Livewire.on('timerFinished', (props) => {
-            if ($wire.tribe === '{{PomodoroPage::POMODORO}}') {
-                $js.setTribe('{{PomodoroPage::SHORT_BREAK}}');
+            if ($wire.tribe === POMODORO) {
+                $js.setTribe(SHORT_BREAK);
             } else {
-                $js.setTribe('{{PomodoroPage::POMODORO}}');
+                $js.setTribe(POMODORO);
             }
 
-            if (props.startedAt && props.stoppedAt) {
-                $wire.dispatch('stopTimer', {
-                    timer_started_at: props.startedAt,
-                    timer_stopped_at: props.stoppedAt
-                });
-            }
+            $wire.saveFrame(props.startedAt, props.stoppedAt);
         });
+
+        Livewire.on('timerReset', (props) => {
+            $wire.saveFrame(props.startedAt, props.stoppedAt);
+            $wire.timerStarted = false;
+        });
+
 
         const hamburger = document.getElementById('hamburger');
         const mobileMenu = document.getElementById('mobileMenu');

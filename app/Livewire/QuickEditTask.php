@@ -78,7 +78,7 @@ class QuickEditTask extends Component
 
         $this->setIcon();
 
-        $this->js('cancel');
+        $this->open = false;
 
         $this->dispatch('taskUpdated', task_id: $this->task_id);
     }

@@ -22,7 +22,7 @@
             />
         </svg>
 
-        <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">
+        <div class="absolute inset-0 flex items-center justify-center text-4xl font-bold">
             <span x-text="formattedTime"></span>
         </div>
     </div>
@@ -66,7 +66,6 @@
                 });
 
                 Livewire.on('setTribe', (props) => {
-                    console.log(props);
                     this.color = props.color;
                     this.colors = this.availableColors[props.color] || this.availableColors['pink'];
                     this.timeLimit = props.tribeInitialTime;
@@ -133,7 +132,7 @@
 
                     this.animationFrame = requestAnimationFrame(tick);
 
-                    Livewire.dispatch('timerStarted', {
+                    $wire.dispatch('timerStarted', {
                         'startedAt': this.startedAt,
                     });
                 }
@@ -148,7 +147,7 @@
                     this.animationFrame = null;
                 }
 
-                Livewire.dispatch('timerStopped', {
+                $wire.dispatch('timerStopped', {
                     'startedAt': this.startedAt,
                     'stoppedAt': this.stoppedAt,
                 });
@@ -167,7 +166,7 @@
                     this.timeLeft = this.timeLimit;
                 }
 
-                Livewire.dispatch('timerFinished', {
+                $wire.dispatch('timerReset', {
                     'startedAt': this.startedAt,
                     'stoppedAt': this.stoppedAt,
                 });
